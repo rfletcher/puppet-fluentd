@@ -35,7 +35,10 @@ define fluentd::install_plugin::gem (
         }
         default: {
             # install a specific version?
-            if $ensure =~ /^\d+(\.\d+)*$/ {
+            if $ensure == 'present' {
+                $version     = ""
+                $version_arg = ""
+            } elsif $ensure =~ /^\d+(\.\d+)*$/ {
                 $version     = $ensure
                 $version_arg = " --version ${version}"
 
@@ -45,9 +48,6 @@ define fluentd::install_plugin::gem (
                     before  => Exec["install_fluent-${plugin_name}"],
                     notify  => Service["${fluentd::service_name}"];
                 }
-            } elsif $ensure == 'present' {
-                $version     = ""
-                $version_arg = ""
             } else {
                 fail("ensure => ${ensure} is currently not supported by this module")
             }
