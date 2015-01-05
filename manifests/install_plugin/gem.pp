@@ -5,13 +5,12 @@
 # Parameters:
 #  the name of this ressource reflects the name of the gem
 #
-#  ensure:      "present"(default) or "absent", install or uninstall a plugin
+#  ensure:      "present"(default), "absent" or a specific gem version, install or uninstall a plugin
 #
 define fluentd::install_plugin::gem (
     $ensure      = 'present',
     $plugin_name = $name,
 ) {
-
     case $::osfamily {
         'debian': {
             $fluent_gem_path = '/usr/lib/fluent/ruby/bin/fluent-gem'
@@ -23,19 +22,11 @@ define fluentd::install_plugin::gem (
             fail("${::osfamily} is currently not supported by this module")
         }
     }
+
     case $ensure {
-        present: {
-            exec {
-                "install_fluent-${plugin_name}":
-                    command => "${fluent_gem_path} install ${plugin_name}",
-                    user    => 'root',
-                    unless  => "${fluent_gem_path} list --local ${plugin_name} | /bin/grep -q ${plugin_name}",
-                    notify  => Service["${fluentd::service_name}"];
-            }
-        }
         absent: {
             exec {
-                "install_fluent-${plugin_name}":
+                "uninstall_fluent-${plugin_name}":
                     command => "${fluent_gem_path} uninstall ${plugin_name}",
                     user    => 'root',
                     unless  => "${fluent_gem_path} list --local ${plugin_name} | /bin/grep -qv ${plugin_name}",
@@ -43,7 +34,31 @@ define fluentd::install_plugin::gem (
             }
         }
         default: {
-            fail("ensure => ${ensure} is currently not supported by this module")
+            # install a specific version?
+            if $ensure =~ /^\d+(\.\d+)*$/ {
+                $version     = $ensure
+                $version_arg = " --version ${version}"
+
+                exec { "cleanup_fluent-${plugin_name}":
+                    command => "${fluent_gem_path} uninstall ${plugin_name} --all",
+                    onlyif  => "test \$(${fluent_gem_path} list --local ${plugin_name} | grep ${plugin_name} | tr ',' '\n' | grep -v ${version} | wc -l) -gt 0",
+                    before  => Exec["install_fluent-${plugin_name}"],
+                    notify  => Service["${fluentd::service_name}"];
+                }
+            } elsif $ensure == 'present' {
+                $version     = ""
+                $version_arg = ""
+            } else {
+                fail("ensure => ${ensure} is currently not supported by this module")
+            }
+
+            exec {
+                "install_fluent-${plugin_name}":
+                    command => "${fluent_gem_path} install ${plugin_name}${version_arg}",
+                    user    => 'root',
+                    unless  => "${fluent_gem_path} list --local ${plugin_name} | /bin/grep -q '${plugin_name}.*${version}'",
+                    notify  => Service["${fluentd::service_name}"];
+            }
         }
     }
 }
