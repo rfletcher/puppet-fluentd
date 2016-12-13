@@ -54,7 +54,7 @@ define fluentd::install_plugin::gem (
 
             exec {
                 "install_fluent-${plugin_name}":
-                    command => "${fluent_gem_path} install ${plugin_name}${version_arg}",
+                    command => "${fluent_gem_path} install ${plugin_name}${version_arg} || true",
                     user    => 'root',
                     unless  => "${fluent_gem_path} list --local ${plugin_name} | /bin/grep -q '${plugin_name}.*${version}'",
                     notify  => Service["${fluentd::service_name}"];
