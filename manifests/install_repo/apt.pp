@@ -6,9 +6,10 @@
 class fluentd::install_repo::apt () {
 
     apt::source { 'treasure-data':
-        location => "http://packages.treasuredata.com/2/ubuntu/${::lsbdistcodename}",
-        release  => "${::lsbdistcodename}",
-        repos    => "contrib",
+        location    => "http://packages.treasuredata.com/2/ubuntu/${::lsbdistcodename}",
+        release     => "${::lsbdistcodename}",
+        repos       => "contrib",
+        include_src => false,
     }
 
     file { '/tmp/packages.treasure-data.com.key':
