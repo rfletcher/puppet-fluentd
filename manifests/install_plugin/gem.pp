@@ -13,10 +13,10 @@ define fluentd::install_plugin::gem (
 ) {
     case $::osfamily {
         'debian': {
-            $fluent_gem_path = '/usr/lib/fluent/ruby/bin/fluent-gem'
+            $fluent_gem_path = '/usr/sbin/td-agent-gem'
         }
         'redhat': {
-            $fluent_gem_path = '/usr/lib64/fluent/ruby/bin/fluent-gem'
+            $fluent_gem_path = '/usr/sbin/td-agent-gem'
         }
         default: {
             fail("${::osfamily} is currently not supported by this module")
