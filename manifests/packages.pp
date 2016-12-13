@@ -21,6 +21,7 @@ class fluentd::packages (
             }
         }
     }
+
     package { "$package_name":
         ensure => $package_ensure
     }
@@ -33,7 +34,10 @@ class fluentd::packages (
                 'libyaml-0-2',
             ]:
                 before => Package[$package_name],
-                ensure => $package_ensure
+                ensure => $package_ensure ? {
+                  absent  => "absent",
+                  default => "present",
+                },
             }
             exec {'add user td-agent to group adm':
                 provider => shell,
