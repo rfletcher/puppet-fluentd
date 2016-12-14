@@ -4,21 +4,15 @@
 #
 #
 class fluentd::install_repo::apt () {
+    ::apt::key { 'treasure-data':
+        source => 'https://packages.treasuredata.com/GPG-KEY-td-agent',
+    } ->
 
-    apt::source { 'treasure-data':
-        location    => "http://packages.treasuredata.com/2/ubuntu/${::lsbdistcodename}",
-        release     => "${::lsbdistcodename}",
-        repos       => "contrib",
-        include_src => false,
-    }
-
-    file { '/tmp/packages.treasure-data.com.key':
-        ensure => file,
-        source => 'puppet:///modules/fluentd/packages.treasure-data.com.key'
-    }->
-    exec { "import gpg key Treasure Data":
-        command => "/bin/cat /tmp/packages.treasure-data.com.key | apt-key add -",
-        unless  => "/usr/bin/apt-key list | grep -q 'Treasure Data'",
-        notify  => Class['::apt::update'],
+    ::apt::source { 'treasure-data':
+        include  => { 'src' => false },
+        location => "http://packages.treasuredata.com/2/ubuntu/${::lsbdistcodename}",
+        release  => "${::lsbdistcodename}",
+        repos    => "contrib",
+        notify   => Class['apt::update'],
     }
 }

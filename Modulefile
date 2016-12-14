@@ -1,7 +1,7 @@
 name         'srf-fluentd'
 version      '0.1.3'
 
-dependency   'puppetlabs/apt', '>= 2.0.0 < 3.0.0'
+dependency   'puppetlabs/apt', '>= 2.2.0 < 3.0.0'
 dependency   'puppetlabs/stdlib', '>= 4.1.0'
 
 summary      'fluentd module'
