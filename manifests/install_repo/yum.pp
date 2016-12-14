@@ -5,7 +5,8 @@
 #
 class fluentd::install_repo::yum (
     $key = $fluentd::params::yum_key_url,
-    ) {
+    $package_name,
+) {
 
     # Sorry for the different naming of the Repository between debian and redhat.
     # But I dont want rename it to avoid a duplication.
