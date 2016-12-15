@@ -8,12 +8,14 @@ class fluentd::packages (
         case $::osfamily {
             'redhat': {
                 class{'fluentd::install_repo::yum':
-                    before => Package[$package_name],
+                    package_name => $package_name,
+                    before       => Package[$package_name],
                 }
             }
             'debian': {
                 class{'fluentd::install_repo::apt':
-                    before => Package[$package_name],
+                    package_name => $package_name,
+                    before       => Package[$package_name],
                 }
             }
             default: {
