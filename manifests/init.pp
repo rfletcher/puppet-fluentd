@@ -12,5 +12,5 @@ class fluentd (
 
     validate_bool($install_repo, $service_enable)
     
-    Class['Fluentd::Config'] -> Class['Fluentd::Packages'] -> Class['Fluentd::Service']
+    Class['Fluentd::Packages'] -> Class['Fluentd::Config'] -> Class['Fluentd::Service']
 }

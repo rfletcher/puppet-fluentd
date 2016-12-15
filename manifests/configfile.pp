@@ -6,9 +6,8 @@ define fluentd::configfile(
 ) {
   $base_name     = "${name}.conf"
   $conf_name     = "${priority}-${base_name}"
-  $conf_dir      = "/etc/td-agent/config.d"
-  $conf_path     = "${conf_dir}/${conf_name}"
-  $wildcard_path = "${conf_dir}/*-${base_name}"
+  $conf_path     = "/etc/td-agent/config.d/${conf_name}"
+  $wildcard_path = "/etc/td-agent/config.d/*-${base_name}"
 
   # clean up in case of a priority change
   exec { "rm ${wildcard_path}":
@@ -23,20 +22,13 @@ define fluentd::configfile(
       notify  => Class['fluentd::service'],
     }
   } else {
-    if ! defined(Exec["mkdir -p ${conf_dir}"]) {
-      exec { "mkdir -p ${conf_dir}":
-        creates => $config_dir,
-      }
-    }
-
     file { $conf_path:
       ensure  => $ensure,
       content => $content,
       owner   => 'td-agent',
       group   => 'td-agent',
       mode    => '0644',
-      before  => Class['fluentd::packages'],
-      require => Exec["mkdir -p ${conf_dir}"],
+      require => Class['fluentd::packages'],
       notify  => Class['fluentd::service'],
     }
   }
