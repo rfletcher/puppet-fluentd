@@ -1,9 +1,11 @@
 <filter <%= @pattern %>>
   <% @config.sort_by{|key,val|key}.each do |key, val| -%>
     <% if val.is_a?( Hash ) -%>
-      <% @config.sort_by{|key,val|key}.each do |key, val| -%>
-      <%= key %> <%= val %>
+      <<%= key %>>
+      <% val.sort_by{|key2,val2|key2}.each do |key2, val2| -%>
+        <%= key2 %> <%= val2 %>
       <% end -%>
+      </<%= key %>>
     <% else -%>
     <%= key %> <%= val %>
     <% end -%>
