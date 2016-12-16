@@ -1,7 +1,7 @@
 # == definition fluentd::source
 define fluentd::source (
   $ensure   = present,
-  $priority = 50,
+  $priority = 15,
   $config   = {},
 ) {
   fluentd::configfile { "source-${name}":

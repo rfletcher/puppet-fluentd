@@ -2,7 +2,7 @@
 define fluentd::match (
   $ensure   = present,
   $config   = {},
-  $priority = 50,
+  $priority = 35,
   $pattern,
 ) {
   fluentd::configfile { "match-${name}":

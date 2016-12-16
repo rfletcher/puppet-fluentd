@@ -2,7 +2,7 @@
 define fluentd::filter (
   $ensure   = present,
   $config   = {},
-  $priority = 50,
+  $priority = 25,
   $pattern,
 ) {
   fluentd::configfile { "filter-${name}":
