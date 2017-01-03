@@ -6,7 +6,7 @@
 class fluentd::install_repo::apt (
   $package_name,
 ) {
-    ::apt::key { 'C901622B5EC4AF820C38AB861093DB45A12E206F':
+    ::apt::key { 'BEE682289B2217F45AF4CC3F901F9177AB97ACBE':
         source => 'https://packages.treasuredata.com/GPG-KEY-td-agent',
     } ->
 
